@@ -1,7 +1,7 @@
 
 
 const typeDefs = /* GraphQL */ `
-  type Authors{
+  type Authors {
     name: String!
     born: Int
     bookCount: Int!
@@ -47,7 +47,7 @@ const typeDefs = /* GraphQL */ `
       setBornTo: Int!
     ): Authors
 
-      createUser(
+    createUser(
     username: String!
     favoriteGenre: String!
     ): User

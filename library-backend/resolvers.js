@@ -98,7 +98,7 @@ const resolvers = {
     createUser: async (root, args) => {
       const user = new User({ 
         username: args.username, 
-        favouriteGenre: args.favouriteGenre 
+        favoriteGenre: args.favoriteGenre 
       })
 
       try {

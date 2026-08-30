@@ -1,14 +1,14 @@
 
 
 const typeDefs = /* GraphQL */ `
-  type Authors {
+  type Author {
     name: String!
     born: Int
     bookCount: Int!
     id:ID!
   }
 
-  type Books {
+  type Book {
     title: String!
     published: Int!
     author: Author!
@@ -29,8 +29,8 @@ const typeDefs = /* GraphQL */ `
   type Query {
     authorCount: Int!
     bookCount: Int!
-    allBooks(author: String, genre: String): [Books!]!
-    allAuthors: [Authors!]!
+    allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
     me:User
   }
 
@@ -40,12 +40,12 @@ const typeDefs = /* GraphQL */ `
       published: Int!
       author: String!
       genres:[String!]!
-    ):Books!
+    ):Book!
 
     editAuthor(
       name: String!
       setBornTo: Int!
-    ): Authors
+    ): Author
 
     createUser(
     username: String!

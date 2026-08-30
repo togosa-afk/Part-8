@@ -5,6 +5,12 @@ const User = require('./models/user')
 const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
 
+require('dotenv').config()
+const mongoose = require('mongoose')
+const connectToDatabase = require('./db')
+
+connectToDatabase(process.env.MONGODB_URI)
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,

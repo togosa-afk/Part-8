@@ -11,10 +11,7 @@ const schema = new mongoose.Schema({
     required: true,
     default: 'Unknown'
   },
-  password: {
-    type: String,
-    // required: true
-  }
+  password:'secret'
 })
 
 module.exports = mongoose.model('User', schema)

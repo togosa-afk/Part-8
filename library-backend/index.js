@@ -1,33 +1,19 @@
-const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
-const jwt = require('jsonwebtoken')
-const User = require('./models/user')
-const typeDefs = require('./schema')
-const resolvers = require('./resolvers')
-
 require('dotenv').config()
-const mongoose = require('mongoose')
+
 const connectToDatabase = require('./db')
+const startServer = require('./server')
 
-connectToDatabase(process.env.MONGODB_URI)
+const MONGODB_URI = process.env.MONGODB_URI
+const PORT = Number(process.env.PORT) || 4000
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-})
+const main = async () => {
+  try {
+    await connectToDatabase(MONGODB_URI)
+    await startServer(PORT)
+  } catch (error) {
+    console.error('Failed to start application:', error.message)
+    process.exit(1)
+  }
+}
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req }) => {
-    const auth = req ? req.get('authorization') : null
-
-    if (auth && auth.startsWith('Bearer ')) {
-      const token = auth.substring(7)
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET || 'SECRET_KEY')
-
-      const currentUser = await User.findById(decodedToken.id)
-
-      return { currentUser }
-    }
-  },
-})
+main()

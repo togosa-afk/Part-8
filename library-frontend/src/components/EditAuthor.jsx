@@ -8,10 +8,19 @@ const EditAuthor =() => {
     const [born,setBorn] = useState('')
     const result = useQuery(ALL_AUTHORS)
 
-    const authors = result.data.allAuthors
+    const authors = result.data?.allAuthors ?? []
+    
     const [editAuthor] = useMutation(UPDATE_AUTHOR,{
         refetchQueries: [{ query: ALL_AUTHORS }]
     })
+
+    if (result.loading) {
+        return <div>Loading ...</div>
+    }
+
+    if(result.error){
+        return <div>{result.error.message}</div>
+    }
 
     const submit = (event) =>{
         event.preventDefault()

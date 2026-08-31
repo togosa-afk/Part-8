@@ -12,9 +12,40 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([])
   const [error,setError] = useState('')
 
-  const [createBook] = useMutation(CREATE_BOOK,{
-    refetchQueries:[{query: ALL_BOOKS,ALL_AUTHORS}],
-    onError: (error) => setError(error.message)
+  const [createBook] = useMutation(CREATE_BOOK, {
+    onError: (error) => {
+      setError(error.message)
+    },
+    update: (cache, response) => {
+      const addedBook = response.data.addBook
+
+      cache.updateQuery({ query: ALL_BOOKS }, (data) => {
+        if (!data) return null
+        const isDuplicate = data.allBooks.some(b => b.id === addedBook.id)
+        if (isDuplicate) return data
+        return { allBooks: data.allBooks.concat(addedBook) }
+      })
+
+      cache.updateQuery({ query: ALL_AUTHORS }, (data) => {
+        if (!data) return null
+
+        const authorInCache = data.allAuthors.find(a => a.name === addedBook.author.name)
+
+        if (authorInCache) {
+          return {
+            allAuthors: data.allAuthors.map(a =>
+              a.name === addedBook.author.name
+                ? { ...a, bookCount: a.bookCount + 1 }
+                : a
+            )
+          }
+        } else {
+          return {
+            allAuthors: data.allAuthors.concat(addedBook.author)
+          }
+        }
+      })
+    }
   })
 
   if (!props.show) {

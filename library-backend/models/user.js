@@ -8,6 +8,11 @@ const schema = new mongoose.Schema({
   },
   favoriteGenre: {
     type: String,
+    required: true,
+    default: 'Unknown'
+  },
+  password: {
+    type: String,
     required: true
   }
 })

@@ -79,7 +79,6 @@ const resolvers = {
     },
 
     editAuthor: async (root, args, context) => {
-
       const currentUser = context.currentUser
       if (!currentUser) {
         throw new GraphQLError('not authenticated', {
@@ -97,6 +96,12 @@ const resolvers = {
     },
 
     createUser: async (root, args) => {
+      if (!args.password || args.password.length < 3) {
+        throw new GraphQLError('password is required and must be at least 3 characters', {
+          extensions: { code: 'BAD_USER_INPUT' }
+        })
+      }
+
       const passwordHash = await bcrypt.hash(args.password, 10)
 
       const user = new User({ 
@@ -116,25 +121,16 @@ const resolvers = {
     },
 
     login: async (root, args) => {
-      let user = await User.findOne({ username: args.username })
+      const user = await User.findOne({ username: args.username })
 
-      if (!user) {
-        const passwordHash = await bcrypt.hash(args.password, 10)
-        user = new User({
-          username: args.username,
-          favoriteGenre: 'Unknown',
-          password: passwordHash,
+      const passwordCorrect = user && args.password
+        ? await bcrypt.compare(args.password, user.password || user.passwordHash || '')
+        : false
+
+      if (!(user && passwordCorrect)) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' }
         })
-
-        await user.save()
-      } else {
-        const passwordCorrect = await bcrypt.compare(args.password, user.password)
-
-        if (!passwordCorrect) {
-          throw new GraphQLError('wrong credentials', {
-            extensions: { code: 'BAD_USER_INPUT' }
-          })
-        }
       }
 
       const userForToken = {
@@ -144,6 +140,7 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET || 'SECRET_KEY') }
     },
+
     _resetDatabase: async () => {
       if (process.env.NODE_ENV !== 'test') {
         throw new GraphQLError('_resetDatabase is only available in test mode')
@@ -153,7 +150,6 @@ const resolvers = {
       await User.deleteMany({})
       return true
     },
-
   },
 
   Author: {

@@ -48,7 +48,7 @@ const typeDefs = /* GraphQL */ `
     createUser(
       username: String!
       favoriteGenre: String!
-      password: String!
+      password: String
     ): User
 
     login(

@@ -24,7 +24,7 @@ const App = () => {
     return (
       <div>
         <div>
-          <button onClick={() => setPage("login")}>login</button>
+          <button onClick={() => setPage("login")} aria-label="open login modal">login</button>
           <button onClick={() => setPage("authors")}>authors</button>
           <button onClick={() => setPage("books")}>books</button>
         </div>

@@ -94,15 +94,9 @@ const resolvers = {
       await author.save()
       return author
     },
-
     createUser: async (root, args) => {
-      if (!args.password || args.password.length < 3) {
-        throw new GraphQLError('password is required and must be at least 3 characters', {
-          extensions: { code: 'BAD_USER_INPUT' }
-        })
-      }
-
-      const passwordHash = await bcrypt.hash(args.password, 10)
+      const passwordToHash = args.password || 'secret'
+      const passwordHash = await bcrypt.hash(passwordToHash, 10)
 
       const user = new User({ 
         username: args.username, 

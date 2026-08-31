@@ -3,7 +3,7 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
-import Recommendation from './components/Recommendation'
+import Recommendation from "./components/Recommendation";
 import { useApolloClient } from "@apollo/client/react";
 
 const App = () => {
@@ -31,7 +31,11 @@ const App = () => {
 
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
-        <LoginForm show={page === "login"} setToken={setToken} setError={setErrorMessage} />
+        <LoginForm
+          show={page === "login"}
+          setToken={setToken}
+          setError={setErrorMessage}
+        />
         <Authors show={page === "authors"} />
         <Books show={page === "books"} />
       </div>
@@ -44,13 +48,15 @@ const App = () => {
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
         <button onClick={() => setPage("add")}>add book</button>
-        <button onClick={() => setPage("recommendation")}>recommendation</button>
+        <button onClick={() => setPage("recommendation")}>
+          recommendation
+        </button>
         <button onClick={onLogout}>logout</button>
       </div>
 
       <Authors show={page === "authors"} token={token} />
       <Books show={page === "books"} />
-      <NewBook show={page === "add"} />
+      <NewBook show={page === "add"} setPage={setPage} />
       <Recommendation show={page === "recommendation"} />
     </div>
   );

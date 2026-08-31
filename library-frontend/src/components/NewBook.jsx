@@ -1,76 +1,83 @@
-import { useMutation } from '@apollo/client/react'
+import { useMutation } from "@apollo/client/react";
 
-import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries'
+import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from "../queries";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 const NewBook = (props) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [published, setPublished] = useState('')
-  const [genre, setGenre] = useState('')
-  const [genres, setGenres] = useState([])
-  const [error,setError] = useState('')
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [published, setPublished] = useState("");
+  const [genre, setGenre] = useState("");
+  const [genres, setGenres] = useState([]);
+  const [error, setError] = useState("");
 
   const [createBook] = useMutation(CREATE_BOOK, {
     onError: (error) => {
-      setError(error.message)
+      setError(error.message);
     },
     update: (cache, response) => {
-      const addedBook = response.data.addBook
+      const addedBook = response.data.addBook;
 
       cache.updateQuery({ query: ALL_BOOKS }, (data) => {
-        if (!data) return null
-        const isDuplicate = data.allBooks.some(b => b.id === addedBook.id)
-        if (isDuplicate) return data
-        return { allBooks: data.allBooks.concat(addedBook) }
-      })
+        if (!data) return null;
+        const isDuplicate = data.allBooks.some((b) => b.id === addedBook.id);
+        if (isDuplicate) return data;
+        return { allBooks: data.allBooks.concat(addedBook) };
+      });
 
       cache.updateQuery({ query: ALL_AUTHORS }, (data) => {
-        if (!data) return null
+        if (!data) return null;
 
-        const authorInCache = data.allAuthors.find(a => a.name === addedBook.author.name)
+        const authorInCache = data.allAuthors.find(
+          (a) => a.name === addedBook.author.name,
+        );
 
         if (authorInCache) {
           return {
-            allAuthors: data.allAuthors.map(a =>
+            allAuthors: data.allAuthors.map((a) =>
               a.name === addedBook.author.name
                 ? { ...a, bookCount: a.bookCount + 1 }
-                : a
-            )
-          }
+                : a,
+            ),
+          };
         } else {
           return {
-            allAuthors: data.allAuthors.concat(addedBook.author)
-          }
+            allAuthors: data.allAuthors.concat(addedBook.author),
+          };
         }
-      })
-    }
-  })
+      });
+    },
+  });
 
   if (!props.show) {
-    return null
+    return null;
   }
-
-
 
   const submit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    console.log('add book...')
-    createBook({variables: {title,author,published: Number(published) , genres}})
+    try {
+      await createBook({
+        variables: { title, author, published: Number(published), genres },
+      });
 
-    setTitle('')
-    setPublished('')
-    setAuthor('')
-    setGenres([])
-    setGenre('')
-  }
+      setTitle("");
+      setPublished("");
+      setAuthor("");
+      setGenres([]);
+      setGenre("");
+      setError("");
+      props.setPage?.("books");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   const addGenre = () => {
-    setGenres(genres.concat(genre))
-    setGenre('')
-  }
+    setGenres(genres.concat(genre));
+    setGenre("");
+  };
 
   return (
     <div>
@@ -80,7 +87,7 @@ const NewBook = (props) => {
           <input
             value={title}
             onChange={({ target }) => setTitle(target.value)}
-            id='title'
+            id="title"
           />
         </div>
         <div>
@@ -88,7 +95,7 @@ const NewBook = (props) => {
           <input
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
-            id='author'
+            id="author"
           />
         </div>
         <div>
@@ -97,7 +104,7 @@ const NewBook = (props) => {
             type="number"
             value={published}
             onChange={({ target }) => setPublished(target.value)}
-            id='published'
+            id="published"
           />
         </div>
         <div>
@@ -105,17 +112,17 @@ const NewBook = (props) => {
           <input
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
-            id='genre'
+            id="genre"
           />
           <button onClick={addGenre} type="button">
             add genre
           </button>
         </div>
-        <div>genres: {genres.join(' ')}</div>
+        <div>genres: {genres.join(" ")}</div>
         <button type="submit">create book</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default NewBook
+export default NewBook;

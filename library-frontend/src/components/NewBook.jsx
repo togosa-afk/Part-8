@@ -76,31 +76,36 @@ const NewBook = (props) => {
     <div>
       <form onSubmit={submit}>
         <div>
-          title
+          <label htmlFor="title">title</label>
           <input
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            id='title'
           />
         </div>
         <div>
-          author
+          <label htmlFor="author">author</label>
           <input
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
+            id='author'
           />
         </div>
         <div>
-          published
+          <label htmlFor="published">published</label>
           <input
             type="number"
             value={published}
             onChange={({ target }) => setPublished(target.value)}
+            id='published'
           />
         </div>
         <div>
+          <label htmlFor="genre">genre</label>
           <input
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
+            id='genre'
           />
           <button onClick={addGenre} type="button">
             add genre

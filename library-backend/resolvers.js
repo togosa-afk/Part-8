@@ -129,7 +129,7 @@ const resolvers = {
       }
 
       if (!passwordCorrect) {
-        throw new GraphQLError('wrong credentials', {
+        throw new GraphQLError('login failed', {
           extensions: { code: 'BAD_USER_INPUT' }
         })
       }

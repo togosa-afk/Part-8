@@ -7,7 +7,7 @@ import Recommendation from './components/Recommendation'
 import { useApolloClient } from "@apollo/client/react";
 
 const App = () => {
-  const [page, setPage] = useState("login");
+  const [page, setPage] = useState("authors");
   const [token, setToken] = useState(localStorage.getItem("book-lib-user"));
   const [errorMessage, setErrorMessage] = useState(null);
 

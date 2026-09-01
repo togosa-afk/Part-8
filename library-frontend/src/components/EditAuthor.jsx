@@ -37,7 +37,7 @@ const EditAuthor =() => {
             <form onSubmit={submit}>
                 <div>
                     name
-                    <select value={name} onChange={({target})=> setName(target.value)}>
+                    <select value={name} onChange={({target})=> setName(target.value)} name="name" >
                         <option value="">chose author</option>
                         {authors.map((a) => (
                                 <option key={a.id} value={a.name}> {a.name} </option>
@@ -45,8 +45,8 @@ const EditAuthor =() => {
                     </select>
                 </div> 
                 <div>
-                    born
-                    <input type="text" value={born} onChange={({ target }) => setBorn(target.value)} />
+                    <label htmlFor="born">born</label>
+                    <input id="born" type="text" value={born} onChange={({ target }) => setBorn(target.value)} />
                 </div>
                 <button type="submit">update author</button>
             </form>

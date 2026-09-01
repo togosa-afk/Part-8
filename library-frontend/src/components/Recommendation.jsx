@@ -40,7 +40,7 @@ export const Recommendation = (props) => {
 
   return (
     <>
-      <h1>recommendation</h1>
+      <h1>recommendations</h1>
 
       <p>
         books in your favorite genre <strong>{favoriteResult}</strong>{" "}

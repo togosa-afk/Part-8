@@ -33,6 +33,7 @@ const EditAuthor =() => {
 
     return(
         <>
+            <h2>Set birthyear</h2>
             <form onSubmit={submit}>
                 <div>
                     name
